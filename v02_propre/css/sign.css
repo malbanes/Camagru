@@ -1,0 +1,54 @@
+.connexion {
+	width:60%;
+	margin-top:1.2em;
+	margin-bottom:1.2em;
+	border-radius:5%;
+	background-color:orange;
+	padding-bottom:20px;
+}
+
+.texte {
+	padding:0.2em;
+	padding-bottom:0.5em;
+	width:100%;
+}
+
+.connexion form label{
+	font-size:1.2em;
+
+}
+
+.connexion form label input {
+	font-size:0.8em;
+	width:95%;
+	margin-bottom:15px;
+}
+
+.submit_button {
+	background-color: #4CAF50; /* Green */
+	color: white;
+	border-radius: 5px;
+	padding: 0.2em 0.5em;
+	text-align: center;
+	text-decoration:strong;
+	font-size: 1.5em;
+}
+
+.submit_button:hover{
+	background-color:#5ABF5F;
+}
+
+@media screen and (max-width: 420px) {
+	.connexion {
+		width:95%;
+	}
+
+	.connexion form {
+		width:100%;
+		text-align:center;
+	}
+
+
+}
+
+
