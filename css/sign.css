@@ -38,6 +38,10 @@
 	background-color:#5ABF5F;
 }
 
+.invalid{
+	border-color:red;
+}
+
 @media screen and (max-width: 420px) {
 	.connexion {
 		width:95%;
