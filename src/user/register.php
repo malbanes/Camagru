@@ -1,61 +1,74 @@
-<?PHP session_start();
-	if (isset($_SESSION['login']))
-	{
-		header('Location: ../user/my-account.php');
-		exit();
-	}
-
-
-
+<?php
+    session_start();
+    if (isset($_SESSION['login']))
+    {
+      header('Location: ../user/profile.php');
+      exit();
+    }
 ?>
-
 <!DOCTYPE html>
-<HTML>
+<html>
 
-<HEAD>
-	<?php include("../../ressources/view/head.html"); ?>
-	<LINK rel="stylesheet" href="./ressources/css/sign.css" />
-</HEAD>
+<head>
+    <?php include("../../ressources/view/head.html"); ?>
+    <title>Camagru-Home</title>
+</head>
 
-<BODY>
-	<?php include("../../ressources/view/header.php"); ?>
+<body>
+    <div id="page">
+        <div id="header">
+            <?php include("../../ressources/view/header.php"); ?>
+        </div>
 
-<div class="content">
+        <div id="content">
+        </br></br>
 
- <div class="connexion">
-		<div class="texte"> <strong>Inscription</strong>, C’est gratuit  </div>
-<div class="id">
-<form method="post" action="check_inscription.php">
-<label for="identifiant" >Identifiant:</label> <input type="text" name="identifiant" id="identifiant" placeholder="Choisissez un nom" 
-<?PHP if (isset($_SESSION['check-login']))
-			{echo "class='invalid'";}?>/></label>
-<?PHP if (isset($_SESSION['check-login']))
-			{echo "<div class='erreur'>".$_SESSION['check-login']."</div>";$_SESSION['check-login']=NULL;}?><br/>
+<div class = "block-form">
 
-<label>Adresse e-mail: <input type="text" name="email" id="email" placeholder="exemple@gmail.fr" 
-<?PHP if (isset($_SESSION['check-mail']))
-			{echo "class='invalid'";}?>/></label>
-<?PHP if (isset($_SESSION['check-mail']))
-			{echo "<div class='erreur'>".$_SESSION['check-mail']."</div>";$_SESSION['check-mail']=NULL;}?><br/>
+        <H2> Inscription </H2>
 
-<label>Mot de passe: <input type="password" name="password1" id="password1" placeholder="Choisissez un mot de passe" 
-<?PHP if (isset($_SESSION['check-password1']))
-			{echo "class='invalid'";}?>/></label>
-<?PHP if (isset($_SESSION['check-password1']))
-			{echo "<div class='erreur'>".$_SESSION['check-password1']."</div>";$_SESSION['check-password1']=NULL;}?><br/>
+        <! -- View formulaire inscription -->
+        </br></br>
+            <form id="registerForm" method="POST" action="check_register.php">
+                <label for="myLogin"> Choisissez un nom :</label>
+                <input id ="myLogin" name="identifiant" type="text" placeholder="Choisissez un nom">
+                <! -- Affichage erreur login -->
+                <?PHP if (isset($_SESSION['check-login']))
+			          {echo "<div class='erreur'>".$_SESSION['check-login']."</div>";$_SESSION['check-login']=NULL;}?><br/></br>
 
+                <label for="myEmail" > Entrez votre email :</label>
+                <input id ="myEmail" name="email" type="text" placeholder="exemple@gmail.fr">
+                 <! -- Affichage erreur email -->
+                <?PHP if (isset($_SESSION['check-mail']))
+			          {echo "<div class='erreur'>".$_SESSION['check-mail']."</div>";$_SESSION['check-mail']=NULL;}?><br/></br>
 
-<label>Confirmation du mot de passe: <input type="password" name="password2" id="password2" placeholder="Confirmez mot de passe"
-<?PHP if (isset($_SESSION['check-password']))
-			{echo "class='invalid'";}?>/></label>
-<?PHP if (isset($_SESSION['check-password']))
-			{echo "<div class='erreur'>".$_SESSION['check-password']."</div>";$_SESSION['check-password']=NULL;}?><br/>
+                <label for="myPassword1"> Choisissez un mot de passe :</label>
+                <input id ="myPassword1" type="password" name="password1" placeholder="Choisissez un mot de passe">
+                <! -- Affichage erreur mdp -->
+                <?PHP if (isset($_SESSION['check-password1']))
+			          {echo "<div class='erreur'>".$_SESSION['check-password1']."</div>";$_SESSION['check-password1']=NULL;}?><br/></br>
 
+                <label for="myPassword2"> Confirmez votre mot de passe :</label>
+                <input id ="myPassword2" type="password" name="password2" placeholder="Confirmez mot de passe">
+                <! -- Affichage erreur mdp different -->
+                <?PHP if (isset($_SESSION['check-password2']))
+		          	{echo "<div class='erreur'>".$_SESSION['check-password2']."</div>";$_SESSION['check-password2']=NULL;}?><br/>
 
-<input class="submit_button" type="submit" name="submit" value="Envoyer"/>
-</form></div>
-	</div>
-	</div>
+                <input type="submit" class="submit_button" value="Envoyer !">
+                <a href="" class="small-text"> renvoyer le lien d'activation </a>
 
-	<?php include("../../ressources/view/footer.php"); ?>
-</BODY>
+            </form>
+</div>
+
+        </br></br>
+        </div>
+
+        <div id="footer">
+            <?php include("../../ressources/view/footer.php"); ?>
+        </div>
+
+    </div>
+</body>
+
+</html>
+

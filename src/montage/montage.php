@@ -1,172 +1,291 @@
 <?php
-		session_start();
+    session_start();
+        if (!isset($_SESSION['login']))
+        {
+            header('Location: ../user/login.php');
+            exit();
+        }
 
+        try{
+            include '../../config/database.php';
+            $bdd = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD);
+            $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $bdd->query("USE camagru");
+            $requete = $bdd->prepare("SELECT * FROM `user` WHERE `login`= :login");
+            $requete->bindParam(':login', $_SESSION['login']);
+            $requete->execute();
+            $result = $requete->fetch();
+
+        }
+        catch (PDOException $e) {
+            print "Erreur : ".$e->getMessage()."<br/>";
+            die();
+        }
+        if ($result==NULL)
+        {
+            header('Location: ../user/login.php');
+            exit();
+        }
+
+        $_SESSION['id'] = $result['id'];
 ?>
 
 <!DOCTYPE html>
-<HTML>
+<html>
 
-<HEAD>
-	<?php include("../../ressources/view/head.html"); ?>
-<LINK rel="stylesheet" href="./ressources/css/montage.css" />
-</HEAD>
+<head>
+    <?php include("../../ressources/view/head.html"); ?>
+    <title>Camagru-Home</title>
+
+
 <script>
-function selectIt(img){
-    var name = img.src;
-	img.style.border='solid 2px blue';
-	//or 	img.style.border='solid 2px #00f0';
 
-}
-</script>
-<BODY>
-	<?php include("../../ressources/view/header.php"); ?>
+ function ouvrir_camera() {
 
-	<div class="content">
+  navigator.mediaDevices.getUserMedia({ audio: false, video: { width: 400 } }).then(function(mediaStream) {
 
-		<form name="form_montage_main">
-<DIV class="content_montage">
-	<div class="main_montage">  <!-- layout-content -->
-		<div class="montage">
-			<div class="left_montage">
-				Objets
-				<ul class="menu_montage"><li class="menu_2"><img class="pp" src="../../ressources/img/icones/point.png" id="../../ressources/img/icones/point.png" ><img onclick="selectIt(this)" class="img_flt" src="../../ressources/img/filtres/filtre1.png" alt=filtre1></li>
-				    <li class="menu_2"><img class="pp" src="../../ressources/img/icones/point.png" width=8px heigh=auto ><img class="img_flt" src="../../ressources/img/filtres/filtre2.png" alt=filtre2></img></li>
-				    <li class="menu_2"><img class="pp"  src="../../ressources/img/icones/point.png" width=8px heigh=auto ><img class="img_flt" src="../../ressources/img/filtres/filtre3.png" alt=filtre3></img></li>
-				    <li class="menu_2"><img class="pp" src="../../ressources/img/icones/point.png" width=8px heigh=auto ><img class="img_flt" src="../../ressources/img/filtres/filtre4.gif" alt=filtre4></img></li>
- <li class="menu_2"><img class="pp" src="../../ressources/img/icones/point.png" width=8px heigh=auto ><img class="img_flt" src="../../ressources/img/filtres/filtre5.png" alt=filtre5></img></li>
-				</ul>	
-			</div>
+   var video = document.getElementById('sourcevid');
+   video.srcObject = mediaStream;
 
-			<div class="mid_montage">
-			<Video id="video"alt="Webcam"></video>
-			</BR><button id="startbutton"> <img class="icone" src="../../ressources/img/icones/photo.png" alt="Prendre une photo"> </button><img id="reset" class="icone" src="../../ressources/img/icones/error.png" alt="discard" label="Supprimer"> </pre>
-				<div class="invisible"><canvas id="canvas"> </canvas></div>
-			</div>
+   var tracks = mediaStream.getTracks();
 
-			<div class="right_montage">
-			Cadres
-				<ul  class="menu_montage"><li class="menu_2"> <li class="menu_2"><img class="img_flt" src="../../ressources/img/filtres/cadre1.gif" alt=cadre1></img></li>
-				    
-				    <li class="menu_2"><img class="pp" src="../../ressources/img/icones/point.png" width=8px heigh=auto ><img class="img_flt" src="../../ressources/img/filtres/cadre3.png" alt=cadre1></img></li>
-				    <li class="menu_2"><img class="pp" src="../../ressources/img/icones/point.png" ><img class="img_flt" src="../../ressources/img/filtres/cadre4.png" alt=cadre1></img></li>
-				</ul>	
-			</div>
+   document.getElementById("message").innerHTML= tracks[0].label+" connecté"
+   //console.log(tracks[0].label)
+   //console.log(mediaStream)
 
-		</div></BR>
-		<div class="appercu_montage" style="display:none;" id="app_montage">  <!-- layout-adv-->
-			</BR>
-<img src="" id="photo" alt="appercu du montage">
-			</BR><a href="save_montage.php" ><img  class="icone" src="../../ressources/img/icones/ok.png" alt="save"></a> 
-		</div>
+   video.onloadedmetadata = function(e) {
+    video.play();
+                                                                                    
+   };
+   document.getElementById("close-cam").setAttribute("class", "visible");
+   document.getElementById("open-cam").setAttribute("class", "invisible");
+    
+  }).catch(function(err) { console.log(err.name + ": " + err.message);
 
-	</div>	
-	<div class=side_montage><img class="icone" src="../../ressources/img//icones/dossier_photo.png" alt="Historique" nale="Historique"></br> </br> </br></br> 
+  document.getElementById("message").innerHTML="connection refusé, rechargez la page"});
 
-	</div>
+ }
 
-</DIV>
-	</div>
-
-	<?php include("../../ressources/view/footer.php"); ?>
-</BODY>
-
-
-		<script>
-(function() {
-
-  var streaming = false,
-      video        = document.querySelector('#video'),
-      cover        = document.querySelector('#cover'),
-      canvas       = document.querySelector('#canvas'),
-      photo        = document.querySelector('#photo'),
-      startbutton  = document.querySelector('#startbutton'),
-      width = 320,
-      height = 0;
-
-  navigator.getMedia = ( navigator.getUserMedia ||
-                         navigator.webkitGetUserMedia ||
-                         navigator.mozGetUserMedia ||
-                         navigator.msGetUserMedia);
-
-  navigator.getMedia(
-    {
-      video: true,
-      audio: false
-    },
-    function(stream) {
-      if (navigator.mozGetUserMedia) {
-        video.mozSrcObject = stream;
-      } else {
-        var vendorURL = window.URL || window.webkitURL;
-        video.src = vendorURL.createObjectURL(stream);
-      }
-      video.play();
-    },
-    function(err) {
-      console.log("An error occured! " + err);
-    }
-  );
-
-  video.addEventListener('canplay', function(ev){
-    if (!streaming) {
-      height = video.videoHeight / (video.videoWidth/width);
-      video.setAttribute('width', width);
-      video.setAttribute('height', height);
-      canvas.setAttribute('width', width);
-      canvas.setAttribute('height', height);
-      streaming = true;
-    }
-  }, false);
-
-  function takepicture() {
-    canvas.width = width;
-    canvas.height = height;
-    canvas.getContext('2d').drawImage(video, 0, 0, width, height);
-    var data = canvas.toDataURL('image/png');
-    photo.setAttribute('src', data);
-    photo.setAttribute('class', "inherit");
-    document.getElementById('app_montage').style.display = "block";
+ function clear_filter() {
+  var elements = document.getElementsByClassName("image_filtre_selection");
+  for (element of elements) 
+  {
+    element.className = "image_filtre";
   }
+  var canvas_filter = document.getElementById('canvas_filters');
+  var ctx = canvas_filter.getContext('2d');
+  ctx.clearRect(0, 0, canvas_filter.width, canvas_filter.height);
+  ctx.restore();
+ }
 
-  startbutton.addEventListener('click', function(ev){
-      takepicture();
-    ev.preventDefault();
-  }, false);
+ function select_filter($this){
+  // console.log($this.src)
 
-})();
+  if ($this.className == "image_filtre_selection")
+  {
+    clear_filter();
+  }
+  else
+  {
+    clear_filter();
+    $this.className = "image_filtre_selection";
+    var canvas_filter = document.getElementById('canvas_filters');
+    var ctx = canvas_filter.getContext('2d');
+    //var img = new Image();
+    //img.src = $this.src;
+    //img.onload = function() {
+      if ($this.id == '1' || $this.id == '2' || $this.id == '3' || $this.id == '4')
+      {
+        ctx.drawImage($this, 0, 0, 370, 300);
+      }
+      else 
+      {
+        ctx.drawImage($this, 0, 0);
 
-/*
-  function savefiltre() {
-	filtres = sessionStorage.getItem('filtre');
+      }
+    //}
 
+  }
+ }
 
-	// Save data to sessionStorage
-sessionStorage.setItem('key', 'value');
+ function photo(){
 
-// Get saved data from sessionStorage
-var data = sessionStorage.getItem('key');
+  var vivi = document.getElementById('sourcevid');
+  //var canvas1 = document.createElement('canvas');
+  var canvas1 = document.getElementById('cvs')
+  //console.log(canvas1)
+  var ctx1 =canvas1.getContext('2d');
+  canvas1.height=vivi.videoHeight
+  canvas1.width=vivi.videoWidth
+  ctx1.drawImage(vivi, 0,0, vivi.videoWidth, vivi.videoHeight);
+  var canvas2 = document.getElementById('canvas_filters');
+  var ctx2 = canvas2.getContext('2d');
+  //canvas2.height=vivi.videoHeight
+  //canvas2.width=vivi.videoWidth
+  var canvasURL;
+  var canvasURL2;
 
-// Remove saved data from sessionStorage
-sessionStorage.removeItem('key');
+  var elements = document.getElementsByClassName("image_filtre_selection");
+  var filtre = elements[0];
 
-// Remove all saved data from sessionStorage
-sessionStorage.clear();
-	if (sessionStorage.length == 0)
-	{
-		document.getElementById('startbutton').style.display = "none";
-		document.getElementById('reset').style.display = "none";
-	}
+  canvasURL2 = filtre.src;
+  //console.log(canvasURL2)
 
-  }*/
+  //Send picture
 
-reset.onclick = function()
-{
-	sessionStorage.clear();
-	if (sessionStorage.length == 0)
-	{
-		document.getElementById('startbutton').style.display = "none";
-		document.getElementById('reset').style.display = "none";
-	}
-}
+    canvasURL = canvas1.toDataURL('image/png');
+    document.getElementById('hidden_data').value = canvasURL;
+    //canvasURL2 = canvas2.toDataURL('image/png');
+    document.getElementById('hidden_data2').value = canvasURL2;
+
+    var fd = new FormData(document.forms["form1"]);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'fonctions/transform_image.php', true);
+    xhr.send(fd);
+ }
+
+ 
+ function fermer(){
+
+  var video = document.getElementById('sourcevid');
+  var mediaStream=video.srcObject;
+  //console.log(mediaStream)
+  var tracks = mediaStream.getTracks();
+  //console.log(tracks[0])
+  tracks.forEach(function(track) {
+   track.stop();
+   document.getElementById("message").innerHTML=tracks[0].label+" déconnecté"
+  });
+    document.getElementById("close-cam").setAttribute("class", "invisible");
+    document.getElementById("open-cam").setAttribute("class", "visible");
+
+  video.srcObject = null;
+ }
 
 </script>
+</head>
+
+<body>
+    <div id="page">
+        <div id="header">
+            <?php include("../../ressources/view/header.php"); ?>
+        </div>
+
+        <div id="content">
+        </br></br>
+
+<! -- Block montage -->
+
+        <div class="block-form">
+        <H2> Mes montages </H2>
+<div class="main_montage">
+
+<! -- sous-section Filtres -->
+                   <div class="left_montage" style="display:inline-block;">
+                   <?php
+
+                     $fix_path = "../../";
+                     include 'fonctions/filters.php';
+                        $datas = get_filters();
+
+                      echo ("<ul class='liste_filtre'>");
+
+                      foreach ($datas as $data)
+                      {
+                        //echo $data[id_filter];
+                        //echo $data[path_filter];
+
+                        echo("<li class='element_filtre'>");
+                        echo ("<img class='image_filtre' src='".$fix_path.$data['path_filter']."' alt='filtre' id=".$data['id_filter'].' onclick="select_filter(this);"></img>');
+
+                        echo ("</li>");
+
+
+                      }
+                      echo ("</ul>");
+
+
+                   ?>
+                   </div>
+
+<! -- sous-section Photos -->
+
+<div class="mid_montage" style="display:inline-block;">
+
+<div class="camera"style="position: relative;height: 320px;">
+<canvas id="canvas_filters" width="370px" height="300px" style="position: absolute; left:0; top:0;"></canvas>
+<Video id="video"alt="Webcam"></video>
+<video id="sourcevid" width="370px" height="300px" autoplay="true" style="position: absolute; left:0; top:0;"></video>
+<div id="message" style='height:20px;width:350px;margin:5px;'></div>
+</div>
+
+<button id="open-cam" onclick='ouvrir_camera()' >ouvrir camera</button>
+<button id="close-cam" class="invisible" onclick='fermer()' >fermer camera</button>
+<button onclick='photo()' >prise de photo</button>
+
+
+<canvas id="cvs" style='display:inline-block'></canvas>
+
+<div>
+ <br>
+ <form method="post" accept-charset="utf-8" name="form1">
+    <input name="hidden_data" id="hidden_data" type="hidden"/>
+    <input name="hidden_data2" id="hidden_data2" type="hidden"/>
+</form>
+</div>
+
+
+</div>
+
+<! -- sous-section Appercu -->
+
+
+
+        </div>
+</div>
+
+<! -- Block Photos -->
+
+        <div class="block-form">
+    <! -- Cree un tablau de 2/x -->
+            <table>
+<thead>
+            <tr>
+              <td><img class="icone" src="../../ressources/img/icones/dossier_photo.png"></img></td>
+              <td>Mes photos</td>
+            </tr>
+</thead>
+            <tr>
+              <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
+              <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
+            </tr>
+            <tr>
+              <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
+              <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
+            </tr>
+<tr>
+  <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
+  <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
+</tr>
+<tr>
+  <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
+  <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
+</tr>
+
+            </table>
+        </div>
+
+        </br></br>
+        </div>
+
+
+        <div id="footer">
+            <?php include("../../ressources/view/footer.php"); ?>
+        </div>
+
+    </div>
+</body>
+
+</html>
+
+
