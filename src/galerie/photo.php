@@ -15,14 +15,13 @@
         exit();
     }
     $data_photo= $data[0];
-
+    $author = get_username($data_photo['id_user']);
+    //print_r ($data_photo);
     
-
-        /*if (isset($_SESSION['login'])){
-        $data = get_user_id($_SESSION['login']);
-        $current_user_id = $data[0]['id'];
-    }*/
-    print_r ($data_photo);
+    //Get likes
+    
+    //get comments
+    
 
 
     ?>
@@ -45,8 +44,14 @@
         <div id="content">
         </br></br>
             <div class = "center">
-            <H2> Post de XX </H2>
+            <H2> Post de <?php echo($author[0]['login']); ?> </H2>
+            <div class = "show_montage">
+<img src= <?php echo("../../".$data_photo['link']); ?> alt='montage' ></img>
 
+            </div>
+
+            <div class="comments">
+            </div>
 
 
             </div>
