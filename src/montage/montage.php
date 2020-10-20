@@ -5,6 +5,8 @@
             header('Location: ../user/login.php');
             exit();
         }
+        include 'fonctions/galerie_fonctions.php';
+
 
         try{
             include '../../config/database.php';
@@ -28,6 +30,13 @@
         }
 
         $_SESSION['id'] = $result['id'];
+
+        if (isset($_SESSION['login'])){
+          $data = get_user_id($_SESSION['login']);
+          $current_user_id = $data[0]['id'];
+      }
+
+      $tab_photos = get_photos_user_date($current_user_id);
 ?>
 
 <!DOCTYPE html>
@@ -213,7 +222,7 @@
 <div class="mid_montage" style="display:inline-block;">
 
 <div class="camera"style="position: relative;height: 320px;">
-<canvas id="canvas_filters" width="370px" height="300px" style="position: absolute; left:0; top:0;"></canvas>
+<canvas id="canvas_filters" width="370px" height="300px" style="position: absolute; left:0; top:0; z-index: 1;"></canvas>
 <Video id="video"alt="Webcam"></video>
 <video id="sourcevid" width="370px" height="300px" autoplay="true" style="position: absolute; left:0; top:0;"></video>
 <div id="message" style='height:20px;width:350px;margin:5px;'></div>
@@ -255,22 +264,24 @@
               <td>Mes photos</td>
             </tr>
 </thead>
-            <tr>
-              <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
-              <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
-            </tr>
-            <tr>
-              <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
-              <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
-            </tr>
-<tr>
-  <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
-  <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
-</tr>
-<tr>
-  <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
-  <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
-</tr>
+
+<?php 
+$i = 0;
+echo "<tr>";
+
+foreach ($tab_photos as $photo)
+    {
+            if ($i == 2)
+            {
+                $i=0;
+                echo "</tr><tr>";
+            }
+                echo '<td><a href="http://localhost:8080/src/galerie/photo.php?photo='.$photo['id_photo'].'"><img class="miniature-photo" src="../../'.$photo['link'].'">  </img></a></td>';
+
+            $i++;    
+    } 
+    echo "</tr>";
+    ?>
 
             </table>
         </div>

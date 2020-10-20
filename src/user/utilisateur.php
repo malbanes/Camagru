@@ -1,10 +1,13 @@
 <?php
     session_start();
+
         if (!isset($_SESSION['login']))
         {
             header('Location: ../user/login.php');
             exit();
         }
+
+        include 'fonctions/user_fonctions.php';
 
         try{
             include '../../config/database.php';
@@ -26,6 +29,13 @@
             header('Location: ../user/login.php');
             exit();
         }
+
+        if (isset($_SESSION['login'])){
+            $data = get_user_id($_SESSION['login']);
+            $current_user_id = $data[0]['id'];
+        }
+
+        $tab_photos = get_photos_user_date($current_user_id);
 
 
 ?>
@@ -69,22 +79,24 @@
               <td>Mes photos</td>
             </tr>
 </thead>
-            <tr>
-              <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
-              <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
-            </tr>
-            <tr>
-              <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
-              <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
-            </tr>
-<tr>
-  <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
-  <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
-</tr>
-<tr>
-  <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
-  <td><img class="miniature-photo" src="../../ressources/img/example.png"></img></td>
-</tr>
+
+<?php 
+$i = 0;
+echo "<tr>";
+
+foreach ($tab_photos as $photo)
+    {
+            if ($i == 2)
+            {
+                $i=0;
+                echo "</tr><tr>";
+            }
+                echo '<td><a href="http://localhost:8080/src/galerie/photo.php?photo='.$photo['id_photo'].'"><img class="miniature-photo" src="../../'.$photo['link'].'">  </img></a></td>';
+
+            $i++;    
+    } 
+    echo "</tr>";
+    ?>
 
             </table>
         </div>

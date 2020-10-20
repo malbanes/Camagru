@@ -277,6 +277,15 @@ button:hover {
 	text-align:left;
 }
 
+.inline {
+	display:inline-block;
+}
+
+.show_montage {
+	width: 360px;
+	margin: auto;
+}
+
 .f_p_login {	
 	font-size: 20px;
 	float:left;
