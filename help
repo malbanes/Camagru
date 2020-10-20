@@ -1,0 +1,8 @@
+Allowed sendmail in localhost
+->go to php>etc>php.ini
+	add email to sendmail
+
+allowed DB import
+->go to mysql conf
+	[mysqld]
+		secure-file-priv=/goinfre/malbanes/mampstack-5.6.40-1/apache2/htdocs/config
