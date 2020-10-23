@@ -95,7 +95,7 @@ $bdd->query("CREATE TABLE IF NOT EXISTS filters (
 
 function	add_filters($bdd)
 {
-	$bdd->query("LOAD DATA INFILE '/goinfre/malbanes/mampstack-7.3.20-0/apache2/htdocs/config/filters.csv'
+	$bdd->query("LOAD DATA INFILE '/goinfre/malbanes/mampstack-5.6.40-1/apache2/htdocs/config/filters.csv'
 	INTO TABLE `filters`
 	CHARACTER SET UTF8
 	FIELDS TERMINATED BY ','

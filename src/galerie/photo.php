@@ -113,14 +113,43 @@
                     <?php echo $nb_com; ?> <img src="../../ressources/img/icones/commentaire.png" class="photo_icones"/>
                 </div>
     </div>
+</div>
 
-            <div class="comments">
+</br></br></br>
 
+<!-- Liste des commentaires -->
+
+            <div class="list_com">
+
+                <div class="block_com">
+                    <div class="prefix">
+                    login 
+                    </div>
+                    <div class="text_com">
+                    mon super com ivneoarignaegr ajv ajfnv jadfnbi jadfjn jdnfv ajfnd ajfnb ajdn bajdnfb ajdnfb jadnfbjnadfibjnad ifaba jdfb jadfnbij adfij nbfadjn bajdn fbdajnf ijnb ajn dfbi jan
+                    </div>
+                </div>
+
+<!-- Fin liste commentaire --> </div>
             
-            </div>
-            </div>
 
-            </div>
+<!-- Formulaire envoi commentaire -->
+</br></br>
+<h4> Laissez un commentaire ! </h4>
+
+<div class="container">
+    <div class="block_com">
+        <div class="prefix">
+        Current Login
+        </div>
+        <div class="text_com">
+        entree de com
+        </div>
+    </div>
+</div>
+
+
+</div>
         </br></br>
         </div>
 
